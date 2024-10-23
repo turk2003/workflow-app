@@ -1,0 +1,18 @@
+<!-- navbar.component.html -->
+<nav class="navbar navbar-expand-md bg-danger">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" routerLink="/">
+            <img src="Liverpool-bird-removebg-preview.png" alt="logo" width="55" height="48">
+            <span class=" ms-3 text-white">Item Workflow</span>
+        </a>
+        <div>
+            <ul class="navbar-nav">
+                @for (menu of menus; track menu.path) {
+                <li class="nav-item">
+                    <a class="nav-link text-white " [routerLink]="menu.path">{{ menu.title }}</a>
+                </li>
+                }
+            </ul>
+        </div>
+    </div>
+</nav>
