@@ -1,7 +1,11 @@
 // item-form.component.ts
 import { JsonPipe, Location } from '@angular/common';
-import { Component, inject, Input } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { FormGroup, NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { BsModalRef, BsModalService, ModalOptions } from 'ngx-bootstrap/modal';
+import { Observable } from 'rxjs';
+import { CanComponentDeactivate } from '../../../auth/guards/can-deactivate.guard';
+import { ConfirmModalComponent } from '../../../shared/components/confirm-modal/confirm-modal.component';
 import { ItemService } from '../../item.service';
 import { ItemStatus } from '../../models/item';
 @Component({
@@ -11,7 +15,7 @@ import { ItemStatus } from '../../models/item';
   templateUrl: './item-form.component.html',
   styleUrl: './item-form.component.scss'
 })
-export class ItemFormComponent {
+export class ItemFormComponent implements OnInit, CanComponentDeactivate {
   @Input()
   id: number | null = null;
 
@@ -32,6 +36,9 @@ export class ItemFormComponent {
     amount: this.amount,
     quantity: this.quantity
   });
+  modalService = inject(BsModalService);
+  bsModalRef?: BsModalRef;
+
   ngOnInit() {
     console.log('id', this.id);
     this.isEditMode = !!this.id;
@@ -48,9 +55,36 @@ export class ItemFormComponent {
     const item = { ...this.fg.getRawValue(), status: ItemStatus.PENDING };
     console.log(item);
     if (this.id) {
-      this.itemService.edit(this.id, item).subscribe(() => this.onBack());
+      this.itemService.edit(this.id, item).subscribe(() => {
+        this.fg.markAsPristine();
+        this.onBack();
+      });
     } else {
-      this.itemService.add(item).subscribe(() => this.onBack());
+      this.itemService.add(item).subscribe(() => {
+        this.fg.markAsPristine();
+        this.onBack();
+      });
     }
+  }
+  canDeactivate(): boolean | Observable<boolean> {
+    const isFormDirty = this.fg.dirty;
+    console.log('isFormDirty', isFormDirty);
+    if (!isFormDirty) {
+      return true;
+    }
+
+    const initialState: ModalOptions = {
+      initialState: {
+        title: `Confirm to leave" ?`
+      }
+    };
+    this.bsModalRef = this.modalService.show(ConfirmModalComponent, initialState);
+
+    return new Observable<boolean>((observer) => {
+      this.bsModalRef?.onHidden?.subscribe(() => {
+        observer.next(this.bsModalRef?.content?.confirmed);
+        observer.complete();
+      });
+    });
   }
 }
