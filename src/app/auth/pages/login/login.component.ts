@@ -37,7 +37,7 @@ export class LoginComponent {
   onLogin() {
     this.authService.login(this.fg.getRawValue()).subscribe({
       next: () => {
-        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/item/item-list';
         this.router.navigate([returnUrl]);
       },
       error: (error) => (this.error = error)

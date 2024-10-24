@@ -12,7 +12,7 @@ export function rolesGuard(roles: Role[]): CanActivateFn {
       return true;
     }
 
-    inject(Router).navigate(['/']);
+    inject(Router).navigate(['/auth/notadmin']);
     return false;
   };
 }
