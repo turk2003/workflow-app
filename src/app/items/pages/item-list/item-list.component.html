@@ -1,17 +1,18 @@
 <!-- item-entry.component.html -->
+ <div >
 <h3 class="m-4 text-danger">Item Entry</h3>
 
-<div class="col mb-3">
+<div class="col mb-3 mx-3">
     <input type="text" class="form-control w-25 border-danger" id="filter" placeholder="Filter..."
         [formControl]="filterInput" />
 </div>
 
 <hr />
-<div class="d-flex justify-content-end mb-3">
+<div class="d-flex justify-content-end mb-3 mx-3" >
     <button class="btn btn-danger" routerLink="/item/item-add">Add</button>
 </div>
 
-<table class="table table-hover  border-secondary">
+<table class="table table-hover  border-secondary p-2">
     <thead class="bg-danger text-white">
         <tr>
             <th></th>
@@ -46,3 +47,4 @@
         }
     </tbody>
 </table>
+</div>
